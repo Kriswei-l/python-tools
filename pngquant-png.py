@@ -89,4 +89,5 @@ def compress(path):
 #       print 'add storage picture'
 
 if __name__ == '__main__':
-    compress(os.getcwd())
+    # compress(os.getcwd())
+    compress('D:\\android_fish\\res\\raw-assets')
