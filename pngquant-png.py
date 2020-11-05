@@ -90,4 +90,4 @@ def compress(path):
 
 if __name__ == '__main__':
     # compress(os.getcwd())
-    compress('D:\\android_fish\\res\\raw-assets')
+    compress(r'D:\FishingGameClient\build\jsb-default\res\raw-assetsa')
