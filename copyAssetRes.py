@@ -24,7 +24,7 @@ def copyRes():
         os.makedirs(distP)
     else:
         delete_file(distP)
-    p = r'D:\FishingGameClient\build\jsb-default\res\raw-assetsa'
+    p = r'D:\FishingGameClient\newtools\move'
     for root, dirs, files in os.walk(p):
         # root 表示当前正在访问的文件夹路径
         # dirs 表示该文件夹下的子目录名list

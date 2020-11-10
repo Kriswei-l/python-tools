@@ -1,7 +1,8 @@
 import os
 import os.path
 import pickle
-
+import shutil
+import glob
 
 def pngquantPicture(file):
     
@@ -80,7 +81,6 @@ def compress(path):
                imageInfoList.append(dict)
 #               print 'no image stored, have to add picure'
 
-                
     if imageInfoListStorage:
        dumpStorageImageInfo(imageInfoListStorage)
 #       print 'update storage picture'
@@ -88,6 +88,48 @@ def compress(path):
        dumpStorageImageInfo(imageInfoList)
 #       print 'add storage picture'
 
+def mycopyfile(srcfile,dstpath):                       # ????
+    for f in os.listdir(srcfile):
+        sourceF = os.path.join(srcfile, f)
+        targetF = os.path.join(dstpath, f)
+        
+        if os.path.isfile(sourceF):
+            #????
+            if not os.path.exists(dstpath):
+                os.makedirs(dstpath)
+
+            fpath,fname=os.path.split(sourceF)             # ????????
+            shutil.copy(sourceF, targetF + fname)          # ????
+            # print ("copy %s -> %s"%(sourceF, targetF + fname))
+        
+        if os.path.isdir(sourceF):
+            mycopyfile(sourceF, targetF)
+            # print ("%s not exist!"%(srcfile))
+def delete_file(filePath):
+    if os.path.exists(filePath):
+        for fileList in os.walk(filePath):
+            for name in fileList[2]:
+                # os.chmod(os.path.join(fileList[0],name), stat.S_IWRITE)
+                os.remove(os.path.join(fileList[0],name))
+        # shutil.rmtree(filePath)
+        return "delete ok"
+    else:
+        return "no filepath"
+
+def copyRes(srcfile, dstpath):
+    # ????????
+    if not os.path.exists(dstpath):
+        os.makedirs(dstpath)
+    else:
+        delete_file(dstpath)
+    mycopyfile(srcfile, dstpath)
+
 if __name__ == '__main__':
     # compress(os.getcwd())
-    compress(r'D:\FishingGameClient\build\jsb-default\res\raw-assetsa')
+    src_dir = input(r'????:')
+    dst_dir = './move/'                     
+    copyRes(src_dir, dst_dir)               # ?????????
+    # src_file_list = glob(src_dir + '*')                    # glob?????????????????
+    # for srcfile in src_file_list:
+    #     mycopyfile(srcfile, dst_dir)                       # ????
+    compress(dst_dir)
