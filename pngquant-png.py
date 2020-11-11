@@ -99,7 +99,7 @@ def mycopyfile(srcfile,dstpath):                       # ????
                 os.makedirs(dstpath)
 
             fpath,fname=os.path.split(sourceF)             # ????????
-            shutil.copy(sourceF, targetF + fname)          # ????
+            shutil.copy(sourceF, targetF)          # ????
             # print ("copy %s -> %s"%(sourceF, targetF + fname))
         
         if os.path.isdir(sourceF):
@@ -117,7 +117,7 @@ def delete_file(filePath):
         return "no filepath"
 
 def copyRes(srcfile, dstpath):
-    # ????????
+    # 判读路径是否存在
     if not os.path.exists(dstpath):
         os.makedirs(dstpath)
     else:
@@ -126,10 +126,10 @@ def copyRes(srcfile, dstpath):
 
 if __name__ == '__main__':
     # compress(os.getcwd())
-    src_dir = input(r'????:')
+    src_dir = input(r'input src:')
     dst_dir = './move/'                     
-    copyRes(src_dir, dst_dir)               # ?????????
-    # src_file_list = glob(src_dir + '*')                    # glob?????????????????
+    copyRes(src_dir, dst_dir)               # 复制一份资源
+    # src_file_list = glob(src_dir + '*')                    # glob获取目录下所有资源
     # for srcfile in src_file_list:
-    #     mycopyfile(srcfile, dst_dir)                       # ????
+    #     mycopyfile(srcfile, dst_dir)
     compress(dst_dir)
