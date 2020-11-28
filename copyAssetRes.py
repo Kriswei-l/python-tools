@@ -19,12 +19,12 @@ def delete_file(filePath):
 
 def copyRes():
     # 从目标目录中复制
-    distP = 'D:/FishingGameClient/obb/raw-assets'
+    distP = 'D:/FishingGameClient/obb/raw-assets/raw-assets'
     if not os.path.exists(distP):
         os.makedirs(distP)
     else:
         delete_file(distP)
-    p = r'D:\FishingGameClient\newtools\move'
+    p = r'D:\FishingGameClient\newtools\raw-assets'
     for root, dirs, files in os.walk(p):
         # root 表示当前正在访问的文件夹路径
         # dirs 表示该文件夹下的子目录名list
