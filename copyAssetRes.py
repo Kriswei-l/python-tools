@@ -17,6 +17,27 @@ def delete_file(filePath):
     else:
         return "no filepath"
 
+def copyJson():
+    # 从目标目录中复制
+    distP = 'D:/FishingGameClient/obb/raw-assets/raw-assets'
+    if not os.path.exists(distP):
+        os.makedirs(distP)
+    else:
+        delete_file(distP)
+    p = r'D:\FishingGameClient\newtools\raw-assets'
+    for root, dirs, files in os.walk(p):
+        # root 表示当前正在访问的文件夹路径
+        # dirs 表示该文件夹下的子目录名list
+        # files 表示该文件夹下的文件list
+
+        # 遍历文件
+        for f in files:
+            n = f.split('.')[0]
+            if n in res_save:
+                ziP = f[:2]
+                if not os.path.exists(distP+'/'+ziP):
+                    os.makedirs(distP+'/'+ziP)
+                shutil.move(os.path.join(root, f), os.path.join(distP+'/'+ziP) )
 def copyRes():
     # 从目标目录中复制
     distP = 'D:/FishingGameClient/obb/raw-assets/raw-assets'

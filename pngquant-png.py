@@ -122,13 +122,15 @@ def copyRes(srcfile, dstpath):
         os.makedirs(dstpath)
     else:
         delete_file(dstpath)
-    mycopyfile(srcfile, dstpath)
 
 if __name__ == '__main__':
     # compress(os.getcwd())
     src_dir = input(r'input src:')
-    dst_dir = './move/'                     
+    dst_dir = './move/'            
+             
     copyRes(src_dir, dst_dir)               # 复制一份资源
+    mycopyfile(src_dir, dst_dir)
+
     # src_file_list = glob(src_dir + '*')                    # glob获取目录下所有资源
     # for srcfile in src_file_list:
     #     mycopyfile(srcfile, dst_dir)
