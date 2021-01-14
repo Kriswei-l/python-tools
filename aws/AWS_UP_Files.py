@@ -1,16 +1,3 @@
-
-import os 
-import boto3
-
-AWS_ACCESS_KEY_ID = 'AKIAI2GZHADL7EWG54OA'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_BUCKET_NAME = ''
-
-session = boto3.Session(
-    aws_access_key_id=AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-    region_name=''
-)
 import os
 import boto3
 
