@@ -1,5 +1,6 @@
 import logging
 import boto3
+from boto3.s3.transfer import S3Transfer
 from botocore.exceptions import ClientError
 import os
 import sys
@@ -83,10 +84,15 @@ def compare_unix_time(file):
 def upload_file_to_bucket(file_name=None,bucket_name=None,key=None):
     if file_name is None:
         raise ValueError("Please enter a valid and complete file path")
-    
     s3 = boto3.client('s3')
-    with open(file_name, "rb") as f:
-        s3.upload_fileobj(f, AWS_BUCKET_NAME, key)
+    transfer = S3Transfer(s3)
+    # Upload /tmp/myfile to s3://bucket/key
+    transfer.upload_file(file_name, AWS_BUCKET_NAME, key)
+    
+    # 上传文件
+    # s3 = boto3.client('s3')
+    # with open(file_name, "rb") as f:
+    #     s3.upload_fileobj(f, AWS_BUCKET_NAME, key)
 
 def upload_file_to_s3(complete_file_path):
     for root, dirs, files in os.walk(complete_file_path, topdown=False):
