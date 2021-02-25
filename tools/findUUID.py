@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# find the line of containing chinese in files
+# find the line of containing UUID in files
 
 import json, time
 import re
