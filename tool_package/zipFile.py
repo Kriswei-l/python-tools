@@ -12,7 +12,7 @@ def zipDir(dirpath,outFullName):
     :return: 无
     """
     #创建空的zip文件(ZipFile类型)。参数w表示写模式。zipfile.ZIP_DEFLATE表示需要压缩，文件会变小。ZIP_STORED是单纯的复制，文件大小没变。
-    zip = zipfile.ZipFile(outFullName,"w",zipfile.ZIP_DEFLATED)
+    zip = zipfile.ZipFile(outFullName, "w", zipfile.ZIP_DEFLATED)
     for path,dirnames,filenames in os.walk(dirpath):
         # 去掉目标跟路径，只对目标文件夹下边的文件及文件夹进行压缩
         fpath = path.replace(dirpath,'')
