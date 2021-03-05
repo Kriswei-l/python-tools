@@ -1,0 +1,1 @@
+/Users/mac/Project/FishingGameClient-en/assets/script/i18n/i18nSprite.ts.meta

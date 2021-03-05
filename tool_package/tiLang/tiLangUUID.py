@@ -3,8 +3,16 @@ import os.path
 import subprocess
 import glob
 import json
+import numpy as np
 nw_path = "./"
 
+# list 转成Json格式数据
+def listToJson(lst):
+    # 如果想json有key值可以先转成字典，然后再写入文件（list_json）
+    # keys = [str(x) for x in np.arange(len(lst))]
+    # list_json = dict(zip(keys, lst))
+    str_json = json.dumps(lst, indent=2, ensure_ascii=False)  # json转为string
+    return str_json
 # 得到UUID转换
 def compressUuid(uuid):
     # print(os.system("node /Users/mac/NewProject/cocoscreator_uuid "+ uuid))
@@ -53,15 +61,21 @@ def open_prefab_find(path, reuuid):
             if not content:
                 break
             contentStr=str(content,encoding='utf-8')
-            contentData += contentStr
+            contentData += (contentStr)
     data = json.loads(contentData)  #prefab内容
     # print(type(data))
     # print(isinstance(data, lsit))
     # print(data)
+    
     for d in data:
         print(d)
 
-    
+
+    # 数据写入文件
+    dJson = listToJson(data)
+    with open(path,"w+") as fw:
+        fw.write(dJson)
+
 
 def find_prefab(reuuid):
     open_prefab_find("./tool_package/test.prefab", reuuid)
@@ -77,7 +91,7 @@ if __name__ == '__main__':
 
     # 项目地址
     prog_path = ""
-    fileNameList = './tool_package/list.txt';
+    fileNameList = './tool_package/tiLang/list.txt';
     objNameList = []
     for i in open(fileNameList, 'r'):
         objNameList.append(i.replace('\n', ''))
