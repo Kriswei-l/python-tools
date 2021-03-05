@@ -29,7 +29,7 @@ def compressUuid(uuid):
     # proc.wait()
 
     if proc.returncode != 0:
-        print("ddd")
+        print("error  compressUuid")
     
     return bytes.decode(out).strip()
 # 查找UUID
@@ -67,8 +67,21 @@ def open_prefab_find(path, reuuid):
     # print(isinstance(data, lsit))
     # print(data)
     
-    for d in data:
-        print(d)
+    typeTab = 0
+    typeindx = 0
+    for i in range(0,len(data)):
+        d = data[i]
+        # print(d)
+        if d['__type__'] == 'cc.Sprite':
+            typeindx += 1
+            typeTab = i
+        if typeindx == 1 and d['__type__'] == reuuid:
+            typeindx -= 1
+            print("YES")
+            print(data[typeTab]['_spriteFrame']['__uuid__'])
+            data[typeTab]['_spriteFrame']['__uuid__'] = "1"
+
+
 
 
     # 数据写入文件
