@@ -13,6 +13,12 @@ def listToJson(lst):
     # list_json = dict(zip(keys, lst))
     str_json = json.dumps(lst, indent=2, ensure_ascii=False)  # json转为string
     return str_json
+def listToJsonEx(lst):
+    # 如果想json有key值可以先转成字典，然后再写入文件（list_json）
+    # keys = [str(x) for x in np.arange(len(lst))]
+    # list_json = dict(zip(keys, lst))
+    str_json = json.dumps(lst,separators=(',', ':'), ensure_ascii=False)  # json转为string
+    return str_json
 # 得到UUID转换
 def compressUuid(uuid):
     # print(os.system("node /Users/mac/NewProject/cocoscreator_uuid "+ uuid))
@@ -69,6 +75,7 @@ def find_ti_uuid(path, fileType):
 def open_prefab_find(path, reuuid, langPath, fileType):
     data = ""
     contentData = ""
+    bLine = 0
     with open(path, 'rb') as infile:
         while True:
             content = infile.readline()
@@ -76,6 +83,7 @@ def open_prefab_find(path, reuuid, langPath, fileType):
                 break
             contentStr=str(content,encoding='utf-8')
             contentData += (contentStr)
+            bLine += 1
     data = json.loads(contentData)  #prefab内容
     # print(type(data))
     # print(isinstance(data, lsit))
@@ -93,23 +101,33 @@ def open_prefab_find(path, reuuid, langPath, fileType):
             typeindx -= 1
             # print(data[typeTab]['_spriteFrame']['__uuid__'])
             # data[typeTab]['_spriteFrame']['__uuid__'] = "1"
+            # 替换UUID
             if d['i18n_string']:
-                print(langPath+'/'+d['i18n_string'])
+                # print(langPath+'/'+d['i18n_string'])
                 tiUUID = find_ti_uuid(langPath+'/'+d['i18n_string'], fileType)
                 if tiUUID:
                     data[typeTab]['_spriteFrame']['__uuid__'] = tiUUID
             typeTab = 0
+        if d['__type__'] == 'cc.PrefabInfo':
+            typeindx = 0
+            typeTab = 0
+    
 
     # 数据写入文件
-    dJson = listToJson(data)
     with open(path,"w+") as fw:
-        fw.write(dJson)
+        if bLine > 1:
+            dJson = listToJson(data)
+            fw.write(dJson)
+        else:
+            dJson = listToJsonEx(data)
+            fw.write(dJson)
 
 # 查找所有的prefab并替换
 def find_prefab(reuuid, fileType):
     language = ''
     pathPrefab = ''
     pathtexture = ''
+    scene = ''
     with open('./tool_package/tiLang/langConf.txt', 'rb') as infile:
         while True:
             content = infile.readline()
@@ -124,9 +142,13 @@ def find_prefab(reuuid, fileType):
                 pathPrefab = alist[1].strip()
             elif alist[0] == 'pathtexture':
                 pathtexture = alist[1].strip()
+            elif alist[0] == 'scene':
+                scene = alist[1].strip()
     
     # 查找单独的一个prefab
-    # open_prefab_find("./tool_package/test.prefab", reuuid, language, fileType)
+    # open_prefab_find("./tool_package/toast.prefab", reuuid, language, fileType)
+    # return
+    # 
     for root, dirs, files in os.walk(pathPrefab):
         # root 表示当前正在访问的文件夹路径
         # dirs 表示该文件夹下的子目录名list
@@ -137,7 +159,27 @@ def find_prefab(reuuid, fileType):
             path=os.path.join(root, f)
             if path.find('.prefab') != -1 and path.find('.meta') == -1:
                 open_prefab_find(path, reuuid, language, fileType)
-
+    for root, dirs, files in os.walk(pathtexture):
+        # root 表示当前正在访问的文件夹路径
+        # dirs 表示该文件夹下的子目录名list
+        # files 表示该文件夹下的文件list
+        
+        # 遍历文件
+        for f in files:
+            path=os.path.join(root, f)
+            if path.find('.prefab') != -1 and path.find('.meta') == -1:
+                open_prefab_find(path, reuuid, language, fileType)
+    # 查找场景
+    for root, dirs, files in os.walk(scene):
+        # root 表示当前正在访问的文件夹路径
+        # dirs 表示该文件夹下的子目录名list
+        # files 表示该文件夹下的文件list
+        
+        # 遍历文件
+        for f in files:
+            path=os.path.join(root, f)
+            if path.find('.fire') != -1 and path.find('.meta') == -1:
+                open_prefab_find(path, reuuid, language, fileType)
 
 if __name__ == '__main__':
     # compress(os.getcwd())

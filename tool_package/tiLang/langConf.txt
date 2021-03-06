@@ -1,3 +1,4 @@
 language=/Users/mac/Project/FishingGameClient-en/assets/resources/langen
 pathPrefab=/Users/mac/Project/FishingGameClient-en/assets/resources
 pathtexture=/Users/mac/Project/FishingGameClient-en/assets/texture
+scene=/Users/mac/Project/FishingGameClient-en/assets/scene
