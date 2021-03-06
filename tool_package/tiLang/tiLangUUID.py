@@ -106,9 +106,12 @@ def open_prefab_find(path, reuuid, langPath, fileType, typeName):
                 # print(langPath+'/'+d['i18n_string'])
                 tiUUID = find_ti_uuid(langPath+'/'+d['i18n_string'], fileType)
                 if tiUUID:
-                    data[typeTab]['_spriteFrame']['__uuid__'] = tiUUID
+                    if data[typeTab]['_spriteFrame']:
+                        data[typeTab]['_spriteFrame']['__uuid__'] = tiUUID
+                    else:
+                        print(path)
             typeTab = 0
-        if d['__type__'] == 'cc.PrefabInfo':
+        if d['__type__'] == 'cc.PrefabInfo' or d['__type__'] == 'cc.Node':
             typeindx = 0
             typeTab = 0
     
@@ -146,8 +149,8 @@ def find_prefab(reuuid, fileType, typeName):
                 scene = alist[1].strip()
     
     # 查找单独的一个prefab
-    open_prefab_find("./tool_package/test.prefab", reuuid, language, fileType, typeName)
-    return
+    # open_prefab_find("./tool_package/test.prefab", reuuid, language, fileType, typeName)
+    # return
     # 
     for root, dirs, files in os.walk(pathPrefab):
         # root 表示当前正在访问的文件夹路径
