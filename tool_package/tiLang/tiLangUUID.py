@@ -124,8 +124,20 @@ def find_prefab(reuuid, fileType):
                 pathPrefab = alist[1].strip()
             elif alist[0] == 'pathtexture':
                 pathtexture = alist[1].strip()
+    
     # 查找单独的一个prefab
-    open_prefab_find("./tool_package/test.prefab", reuuid, language, fileType)
+    # open_prefab_find("./tool_package/test.prefab", reuuid, language, fileType)
+    for root, dirs, files in os.walk(pathPrefab):
+        # root 表示当前正在访问的文件夹路径
+        # dirs 表示该文件夹下的子目录名list
+        # files 表示该文件夹下的文件list
+        
+        # 遍历文件
+        for f in files:
+            path=os.path.join(root, f)
+            if path.find('.prefab') != -1 and path.find('.meta') == -1:
+                open_prefab_find(path, reuuid, language, fileType)
+
 
 if __name__ == '__main__':
     # compress(os.getcwd())
