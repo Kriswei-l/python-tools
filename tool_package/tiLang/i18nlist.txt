@@ -1,2 +1,2 @@
-/Users/mac/Project/FishingGameClient-en/assets/script/i18n/i18nSprite.ts.meta:png-jpg
-/Users/mac/Project/FishingGameClient-en/assets/script/i18n/i18nMaskSprite.ts.meta:png-jpg
+cc.Sprite:/Users/mac/Project/FishingGameClient-en/assets/script/i18n/i18nSprite.ts.meta:png-jpg
+cc.Mask:/Users/mac/Project/FishingGameClient-en/assets/script/i18n/i18nMaskSprite.ts.meta:png-jpg
