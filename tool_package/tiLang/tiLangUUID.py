@@ -72,7 +72,7 @@ def find_ti_uuid(path, fileType):
             return uuid
 
 # 打开文件查找reuuid
-def open_prefab_find(path, reuuid, langPath, fileType):
+def open_prefab_find(path, reuuid, langPath, fileType, typeName):
     data = ""
     contentData = ""
     bLine = 0
@@ -94,7 +94,7 @@ def open_prefab_find(path, reuuid, langPath, fileType):
     for i in range(0,len(data)):
         d = data[i]
         # print(d)
-        if d['__type__'] == 'cc.Sprite':
+        if d['__type__'] == typeName:
             typeindx += 1
             typeTab = i
         if typeindx == 1 and d['__type__'] == reuuid:
@@ -123,7 +123,7 @@ def open_prefab_find(path, reuuid, langPath, fileType):
             fw.write(dJson)
 
 # 查找所有的prefab并替换
-def find_prefab(reuuid, fileType):
+def find_prefab(reuuid, fileType, typeName):
     language = ''
     pathPrefab = ''
     pathtexture = ''
@@ -146,8 +146,8 @@ def find_prefab(reuuid, fileType):
                 scene = alist[1].strip()
     
     # 查找单独的一个prefab
-    # open_prefab_find("./tool_package/toast.prefab", reuuid, language, fileType)
-    # return
+    open_prefab_find("./tool_package/test.prefab", reuuid, language, fileType, typeName)
+    return
     # 
     for root, dirs, files in os.walk(pathPrefab):
         # root 表示当前正在访问的文件夹路径
@@ -158,7 +158,7 @@ def find_prefab(reuuid, fileType):
         for f in files:
             path=os.path.join(root, f)
             if path.find('.prefab') != -1 and path.find('.meta') == -1:
-                open_prefab_find(path, reuuid, language, fileType)
+                open_prefab_find(path, reuuid, language, fileType, typeName)
     for root, dirs, files in os.walk(pathtexture):
         # root 表示当前正在访问的文件夹路径
         # dirs 表示该文件夹下的子目录名list
@@ -168,7 +168,7 @@ def find_prefab(reuuid, fileType):
         for f in files:
             path=os.path.join(root, f)
             if path.find('.prefab') != -1 and path.find('.meta') == -1:
-                open_prefab_find(path, reuuid, language, fileType)
+                open_prefab_find(path, reuuid, language, fileType, typeName)
     # 查找场景
     for root, dirs, files in os.walk(scene):
         # root 表示当前正在访问的文件夹路径
@@ -179,7 +179,7 @@ def find_prefab(reuuid, fileType):
         for f in files:
             path=os.path.join(root, f)
             if path.find('.fire') != -1 and path.find('.meta') == -1:
-                open_prefab_find(path, reuuid, language, fileType)
+                open_prefab_find(path, reuuid, language, fileType, typeName)
 
 if __name__ == '__main__':
     # compress(os.getcwd())
@@ -201,7 +201,10 @@ if __name__ == '__main__':
     # 循环查找
     for i in objNameList:
         iList = i.split(':')
-        objName = r"".join(iList[0])
+        if len(iList) < 3:
+            break
+        typeName = iList[0]
+        objName = r"".join(iList[1])
         if os.path.isdir(objName):
             # walkFile(objName)
             ''
@@ -210,6 +213,6 @@ if __name__ == '__main__':
             reuuid = compressUuid(uuid)
             print(reuuid)
             if iList[1]:
-                fileType = iList[1].split('-')
-            find_prefab(reuuid, fileType)
+                fileType = iList[2].split('-')
+            find_prefab(reuuid, fileType, typeName)
 
