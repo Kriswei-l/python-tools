@@ -52,8 +52,21 @@ def start_find_uuid(path, name):
     else: 
         return ''
 
+# 查找替换的prefab的UUID
+def find_ti_uuid(path, fileType):
+    if not fileType:
+        return
+
+    pathList = path.split('/')
+    fileName = pathList[len(pathList)-1]
+    for d in fileType:
+        if os.path.isfile(path+'.'+d) and os.path.isfile(path+'.'+d+'.meta'):
+            uuid = start_find_uuid(path+'.'+d+'.meta', fileName)
+            # print(uuid)
+            return uuid
+
 # 打开文件查找reuuid
-def open_prefab_find(path, reuuid, langPath):
+def open_prefab_find(path, reuuid, langPath, fileType):
     data = ""
     contentData = ""
     with open(path, 'rb') as infile:
@@ -78,14 +91,14 @@ def open_prefab_find(path, reuuid, langPath):
             typeTab = i
         if typeindx == 1 and d['__type__'] == reuuid:
             typeindx -= 1
-            print(data[typeTab]['_spriteFrame']['__uuid__'])
-            data[typeTab]['_spriteFrame']['__uuid__'] = "1"
+            # print(data[typeTab]['_spriteFrame']['__uuid__'])
+            # data[typeTab]['_spriteFrame']['__uuid__'] = "1"
             if d['i18n_string']:
-                print(d['i18n_string'])
+                print(langPath+'/'+d['i18n_string'])
+                tiUUID = find_ti_uuid(langPath+'/'+d['i18n_string'], fileType)
+                if tiUUID:
+                    data[typeTab]['_spriteFrame']['__uuid__'] = tiUUID
             typeTab = 0
-
-
-
 
     # 数据写入文件
     dJson = listToJson(data)
@@ -93,7 +106,7 @@ def open_prefab_find(path, reuuid, langPath):
         fw.write(dJson)
 
 # 查找所有的prefab并替换
-def find_prefab(reuuid):
+def find_prefab(reuuid, fileType):
     language = ''
     pathPrefab = ''
     pathtexture = ''
@@ -103,7 +116,7 @@ def find_prefab(reuuid):
             if not content:
                 break
             contentStr=str(content,encoding='utf-8').replace('\n', '')
-            print(contentStr)
+            # print(contentStr)
             alist = contentStr.split('=')
             if alist[0] == 'language':
                 language = alist[1].strip()
@@ -112,7 +125,7 @@ def find_prefab(reuuid):
             elif alist[0] == 'pathtexture':
                 pathtexture = alist[1].strip()
     # 查找单独的一个prefab
-    open_prefab_find("./tool_package/test.prefab", reuuid, language)
+    open_prefab_find("./tool_package/test.prefab", reuuid, language, fileType)
 
 if __name__ == '__main__':
     # compress(os.getcwd())
@@ -133,7 +146,8 @@ if __name__ == '__main__':
 
     # 循环查找
     for i in objNameList:
-        objName = r"".join(i)
+        iList = i.split(':')
+        objName = r"".join(iList[0])
         if os.path.isdir(objName):
             # walkFile(objName)
             ''
@@ -141,5 +155,7 @@ if __name__ == '__main__':
             uuid = start_find_uuid(objName, i)
             reuuid = compressUuid(uuid)
             print(reuuid)
-            find_prefab(reuuid)
+            if iList[1]:
+                fileType = iList[1].split('-')
+            find_prefab(reuuid, fileType)
 
