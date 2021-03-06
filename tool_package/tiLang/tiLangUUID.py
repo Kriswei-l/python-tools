@@ -51,8 +51,9 @@ def start_find_uuid(path, name):
         return data["uuid"]
     else: 
         return ''
+
 # 打开文件查找reuuid
-def open_prefab_find(path, reuuid):
+def open_prefab_find(path, reuuid, langPath):
     data = ""
     contentData = ""
     with open(path, 'rb') as infile:
@@ -77,9 +78,11 @@ def open_prefab_find(path, reuuid):
             typeTab = i
         if typeindx == 1 and d['__type__'] == reuuid:
             typeindx -= 1
-            print("YES")
             print(data[typeTab]['_spriteFrame']['__uuid__'])
             data[typeTab]['_spriteFrame']['__uuid__'] = "1"
+            if d['i18n_string']:
+                print(d['i18n_string'])
+            typeTab = 0
 
 
 
@@ -89,9 +92,27 @@ def open_prefab_find(path, reuuid):
     with open(path,"w+") as fw:
         fw.write(dJson)
 
-
+# 查找所有的prefab并替换
 def find_prefab(reuuid):
-    open_prefab_find("./tool_package/test.prefab", reuuid)
+    language = ''
+    pathPrefab = ''
+    pathtexture = ''
+    with open('./tool_package/tiLang/langConf.txt', 'rb') as infile:
+        while True:
+            content = infile.readline()
+            if not content:
+                break
+            contentStr=str(content,encoding='utf-8').replace('\n', '')
+            print(contentStr)
+            alist = contentStr.split('=')
+            if alist[0] == 'language':
+                language = alist[1].strip()
+            elif alist[0] == 'pathPrefab':
+                pathPrefab = alist[1].strip()
+            elif alist[0] == 'pathtexture':
+                pathtexture = alist[1].strip()
+    # 查找单独的一个prefab
+    open_prefab_find("./tool_package/test.prefab", reuuid, language)
 
 if __name__ == '__main__':
     # compress(os.getcwd())
@@ -104,11 +125,13 @@ if __name__ == '__main__':
 
     # 项目地址
     prog_path = ""
-    fileNameList = './tool_package/tiLang/list.txt';
+    # 需要替换文件的配置
+    fileNameList = './tool_package/tiLang/i18nlist.txt';
     objNameList = []
     for i in open(fileNameList, 'r'):
         objNameList.append(i.replace('\n', ''))
 
+    # 循环查找
     for i in objNameList:
         objName = r"".join(i)
         if os.path.isdir(objName):
