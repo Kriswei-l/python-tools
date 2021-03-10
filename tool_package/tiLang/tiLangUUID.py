@@ -110,10 +110,13 @@ def open_prefab_find(path, reuuid, langPath, fileType, typeName):
                         data[typeTab]['_spriteFrame']['__uuid__'] = tiUUID
                     else:
                         print(path)
+                    typeTab = 0
             typeTab = 0
         if d['__type__'] == 'cc.PrefabInfo' or d['__type__'] == 'cc.Node':
             typeindx = 0
             typeTab = 0
+        if d['__type__'] == typeName and typeindx > 1:
+            typeindx -= 1
     
 
     # 数据写入文件
@@ -149,7 +152,7 @@ def find_prefab(reuuid, fileType, typeName):
                 scene = alist[1].strip()
     
     # 查找单独的一个prefab
-    # open_prefab_find("./tool_package/test.prefab", reuuid, language, fileType, typeName)
+    # open_prefab_find("./tool_package/Login.fire", reuuid, language, fileType, typeName)
     # return
     # 
     for root, dirs, files in os.walk(pathPrefab):

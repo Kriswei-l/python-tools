@@ -22,6 +22,8 @@ def start_find_uuid(path, name):
 
     if data["subMetas"] and data["subMetas"][name]:
         return data["subMetas"][name]["uuid"]
+    elif data["uuid"]:
+        return data["uuid"]
     else: 
         return ''
     # print(data["subMetas"][name]["uuid"])
@@ -38,7 +40,7 @@ def compare_find_uuid(uuid, path):
                 return False
 
 def compare_uuid(uuid):
-    for root, dirs, files in os.walk("/Users/mac/Project/FishingGameClient/assets/resources/"):
+    for root, dirs, files in os.walk("/Users/mac/Project/FishingGameClient-en/assets/resources/"):
 
         # root 表示当前正在访问的文件夹路径
         # dirs 表示该文件夹下的子目录名list
@@ -50,9 +52,9 @@ def compare_uuid(uuid):
             if path.find('.prefab') != -1 and path.find('.meta') == -1:
                 if compare_find_uuid(uuid, path):
                     global out
-                    out += path
+                    out += (path+" -- "+uuid)
                     out += "\n"
-                    print(path)
+                    print(path+" -- "+uuid)
 
 def walkFile(file):
     for root, dirs, files in os.walk(file):
@@ -70,6 +72,12 @@ def walkFile(file):
                 # 查找UUID是否被使用
                 if uuid:
                     compare_uuid(uuid)
+            elif path.find('.fnt') != -1 and path.find('.meta') != -1:
+                name = f.split(".")[0]
+                uuid = start_find_uuid(path, name)
+                # 查找UUID是否被使用
+                if uuid:
+                    compare_uuid(uuid)
                 
     
     with open('uuid.txt', 'wb') as outfile:
@@ -81,4 +89,4 @@ def walkFile(file):
 
 # start to find
 if __name__ == '__main__':
-    walkFile("/Users/mac/Project/FishingGameClient/assets/resources/langzh/")
+    walkFile("/Users/mac/Project/FishingGameClient-en/assets/resources/langzh/")
