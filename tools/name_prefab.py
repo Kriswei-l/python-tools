@@ -12,10 +12,10 @@ def start_find_chinese(path):
             content = infile.readline()
             contentStr=str(content,encoding='utf-8')
             sub='_string'
-            if re.match(r'(.*[\u4E00-\u9FA5]+)|([\u4E00-\u9FA5]+.*)', content.decode('utf-8'))  and contentStr.find(sub) != -1:
+            if re.match(r'^((?!(\*|//)).)+[\u4e00-\u9fa5]', content.decode('utf-8'))  and contentStr.find(sub) != -1:
                 idx=contentStr.index(sub)
                 contentStr=contentStr[idx+11:-3]
-                contentStr="'"+contentStr+"'"+":'',\n"
+                contentStr=contentStr+"\n"
                 outstr+=contentStr
             if not content:
                 return outstr
@@ -44,4 +44,4 @@ def walkFile(file):
 
 # start to find
 if __name__ == '__main__':
-    walkFile("D:\\git\\fish_client\\assets\\resources")
+    walkFile("/Users/mac/NewProject/fisshinggameclient/assets")
