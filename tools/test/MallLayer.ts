@@ -17,6 +17,10 @@ export default class MallLayer {
      * @param target 
      */
     recyPayData(cmd: number, resp: PayOkResp, target: cc.Component) {
+        /**
+          我是测试消息
+         */
+        // 我还是测试消息
         if (this.goodInfo) {
             for (var j in this.goodInfo.item) {
                 var i = this.goodInfo.item[j];
