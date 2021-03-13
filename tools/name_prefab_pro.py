@@ -81,7 +81,7 @@ def walkFile(file):
         for f in files:
             path=os.path.join(root, f)
             if path.find('.prefab') != -1 and path.find('.meta') == -1:
-                nowout =open_prefab_find(path, 'cc.Label', True)
+                nowout =open_prefab_find(path, 'cc.Label', False)
                 # nowout =open_prefab_find(path, 'cc.EditBox', False)
                 if nowout:
                     out += nowout+'\n'
