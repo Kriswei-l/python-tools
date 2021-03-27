@@ -1,3 +1,7 @@
+'''
+多语言设置：替换语言文件
+'''
+
 import os
 import os.path
 import subprocess
