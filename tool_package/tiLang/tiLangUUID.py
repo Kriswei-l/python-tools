@@ -70,7 +70,7 @@ def find_ti_uuid(path, fileType):
     pathList = path.split('/')
     fileName = pathList[len(pathList)-1]
     for d in fileType:
-        if os.path.isfile(path+'.'+d) and os.path.isfile(path+'.'+d+'.meta'):
+        if os.path.exists(path+'.'+d) and os.path.isfile(path+'.'+d) and os.path.isfile(path+'.'+d+'.meta'):
             uuid = start_find_uuid(path+'.'+d+'.meta', fileName)
             # print(uuid)
             return uuid
@@ -115,6 +115,10 @@ def open_prefab_find(path, reuuid, langPath, fileType, typeName):
                     else:
                         print(path)
                     typeTab = 0
+                else:
+                    #找不到替换的图片时，把现在语言的uuid设置为空
+                    if data[typeTab]['_spriteFrame']:
+                        data[typeTab]['_spriteFrame']['__uuid__'] = ""
             typeTab = 0
         if d['__type__'] == 'cc.PrefabInfo' or d['__type__'] == 'cc.Node':
             typeindx = 0
