@@ -113,7 +113,7 @@ def open_prefab_find(path, reuuid, langPath, fileType, typeName):
                     if data[typeTab]['_spriteFrame']:
                         data[typeTab]['_spriteFrame']['__uuid__'] = tiUUID
                     else:
-                        print(path)
+                        print("_priteFrame null file:"+path)
                     typeTab = 0
                 else:
                     #找不到替换的图片时，把现在语言的uuid设置为空

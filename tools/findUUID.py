@@ -6,6 +6,7 @@ import json, time
 import re
 import os
 
+rootPath = '/Users/mac/Project/FishingGameClient/'
 out=''
 
 def start_find_uuid(path, name):
@@ -40,7 +41,7 @@ def compare_find_uuid(uuid, path):
                 return False
 
 def compare_uuid(uuid):
-    for root, dirs, files in os.walk("/Users/mac/NewProject/fisshinggameclient/assets/"):
+    for root, dirs, files in os.walk(rootPath+"assets/"):
 
         # root 表示当前正在访问的文件夹路径
         # dirs 表示该文件夹下的子目录名list
@@ -89,4 +90,4 @@ def walkFile(file):
 
 # start to find
 if __name__ == '__main__':
-    walkFile("/Users/mac/NewProject/fisshinggameclient/assets/resources/langzh/")
+    walkFile(rootPath+"assets/resources/langzh/")
