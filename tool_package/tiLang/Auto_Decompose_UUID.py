@@ -143,54 +143,7 @@ def find_child_type(data, dsite, reuuid, langPath, fileType, typeName, path):
         # print(data[dChild_d['__id__']])
         find_child_type(data, data[dChild_d['__id__']], reuuid, langPath, fileType, typeName, path)
 
-def open_prefab(path, i18nStr, reuuid, langPath, fileType, typeName):
-    data = ""
-    contentData = ""
-    bLine = 0
-    with open(path, 'rb') as infile:
-        while True:
-            content = infile.readline()
-            if not content:
-                break
-            contentStr=str(content,encoding='utf-8')
-            contentData += (contentStr)
-            bLine += 1
-    data = json.loads(contentData)  #prefab内容
-    # 判断数据的类型
-    # print(type(data))
-    # print(isinstance(data, lsit))
-    # print(data)
-    
-    tree = None
-    for i in range(0,len(data)):
-        d = data[i]
-        # print(d)
-        if d['__type__'] == 'cc.Node':
-            # print(d['_children'])
-            dChild = d['_children']
-            tree = TreeNode(d, 0)
-            # print(len(dChild))
-            for j in range(0, len(dChild)):
-                dChild_d = dChild[j]
-                # print(dChild_d['__id__'])
-                # print(data[dChild_d['__id__']])
-                
-                find_child_type(data, data[dChild_d['__id__']], reuuid, langPath, fileType, typeName, path)
-            
-            # 查找第一层节点的component
-            find_components_type(data, d['_components'], reuuid, langPath, fileType, typeName, path)
 
-            break
-    
-
-    # 数据写入文件
-    with open(path,"w+") as fw:
-        if bLine > 1:
-            dJson = listToJson(data)
-            fw.write(dJson)
-        else:
-            dJson = listToJsonEx(data)
-            fw.write(dJson)
 
 
 # 查找所有的prefab并替换
@@ -219,6 +172,129 @@ def find_prefab(reuuid, fileType, typeName):
     # 查找单独的一个prefab
     # open_prefab("./tool_package/Login.fire", reuuid, language, fileType, typeName)
     # return
+
+def find_child_PrefabInfo(trie, p, data, dPref):
+    """查找prefabinfo"""
+    if data is None:
+        return
+    if dPref is None:
+        return
+    dIndex = dPref['__id__']
+    dChild_d = data[dIndex]
+    c = TreeNode(dChild_d, 3)
+    trie.add(p, c)
+
+def find_child_clickEvents(trie, p, data, dClick):
+    """查找按钮事件"""
+    if data is None:
+        return
+    if dClick is None:
+        return
+    if len(dClick) <= 0:
+        return
+    
+    for j in range(0, len(dClick)):
+        dIndex = dClick[j]['__id__']
+        dChild_d = data[dIndex]
+        c = TreeNode(dChild_d, 2)
+        trie.add(p, c)
+
+def find_child_componente(trie, p, data, dcomp):
+    """"查找components"""
+    if data is None:
+        return
+    if dcomp is None:
+        return
+    if len(dcomp) <= 0:
+        return
+    
+    for j in range(0, len(dcomp)):
+        dIndex = dcomp[j]['__id__']
+        dChild_d = data[dIndex]
+        c = TreeNode(dChild_d, 2)
+        trie.add(p, c)
+        if dChild_d.get('clickEvents'):
+            find_child_clickEvents(trie, c, data, dChild_d['clickEvents'])
+ 
+# 查找节点
+def find_child_node(trie, p, data, dsite):
+    if data is None:
+        return
+    if dsite is None:
+        return
+    
+    t = TreeNode(dsite, 1)
+    trie.add(p, t)
+    # 查看子节点
+    dChild = dsite.get('_children')
+    if dChild is None or len(dChild) <= 0:
+        # 查找Components
+        find_child_componente(trie, t, data, dsite.get('_components'))
+        find_child_PrefabInfo(trie, t, data, dsite.get('_prefab'))
+        return
+    if dChild is None:
+        return
+    for j in range(0, len(dChild)):
+        dChild_d = dChild[j]
+        # print(dChild_d['__id__'])
+        # print(data[dChild_d['__id__']])
+        find_child_node(trie, t, data, data[dChild_d['__id__']])
+    
+    # 查找Components
+    find_child_componente(trie, t, data, dsite.get('_components'))
+    find_child_PrefabInfo(trie, t, data, dsite.get('_prefab'))
+
+def open_prefab(path, i18nStr, reuuid, langPath, fileType, typeName):
+    data = ""
+    contentData = ""
+    bLine = 0
+    with open(path, 'rb') as infile:
+        while True:
+            content = infile.readline()
+            if not content:
+                break
+            contentStr=str(content,encoding='utf-8')
+            contentData += (contentStr)
+            bLine += 1
+    data = json.loads(contentData)  #prefab内容
+    # 判断数据的类型
+    # print(type(data))
+    # print(isinstance(data, lsit))
+    # print(data)
+    
+    tree = None
+    trie = TrieTree()
+    for i in range(0,len(data)):
+        d = data[i]
+        # print(d)
+        if d['__type__'] == 'cc.Node':
+            # print(d['_children'])
+            dChild = d['_children']
+            tree = TreeNode(d, 0)
+            # print(len(dChild))
+            for j in range(0, len(dChild)):
+                dChild_d = dChild[j]
+                # print(dChild_d['__id__'])
+                # print(data[dChild_d['__id__']])
+                find_child_node(trie, tree, data, data[dChild_d['__id__']])
+
+            # 查找第一层节点的component
+            find_child_componente(trie, tree, data, d['_components'])
+            find_child_PrefabInfo(trie, tree, data, d['_prefab'])
+            break
+    
+    newData = []
+    newData.append(data[0])
+    newData.extend(trie.prologue(tree))
+
+    # 数据写入文件
+    with open(path,"w+") as fw:
+        if bLine > 1:
+            dJson = listToJson(newData)
+            fw.write(dJson)
+        else:
+            dJson = listToJsonEx(newData)
+            fw.write(dJson)
 
 def find_file_type(path, root, fileName, filetype, addType):
     nameS = ''
@@ -251,59 +327,10 @@ def walkFile(file):
             find_file_type(path, root, f, '.png', '0ffbcbl89xEj5yYYH4SQgf+')
             # find_file_type(path, f, '.fnt')
 
-
-def decompose_prefab(path):
-    """解析prefab"""
-    data = ""
-    contentData = ""
-    bLine = 0
-    with open(path, 'rb') as infile:
-        while True:
-            content = infile.readline()
-            if not content:
-                break
-            contentStr=str(content,encoding='utf-8')
-            contentData += (contentStr)
-            bLine += 1
-    data = json.loads(contentData)  #prefab内容
-    # 判断数据的类型
-    # print(type(data))
-    # print(isinstance(data, lsit))
-    # print(data)
-    
-    for i in range(0,len(data)):
-        d = data[i]
-        # print(d)
-        if d['__type__'] == 'cc.Node':
-            # print(d['_children'])
-            dChild = d['_children']
-            # print(len(dChild))
-            for j in range(0, len(dChild)):
-                dChild_d = dChild[j]
-                # print(dChild_d['__id__'])
-                # print(data[dChild_d['__id__']])
-                find_child_type(data, data[dChild_d['__id__']], reuuid, langPath, fileType, typeName, path)
-            
-            # 查找第一层节点的component
-            find_components_type(data, d['_components'], reuuid, langPath, fileType, typeName, path)
-
-            break
-
-    
-
-    # 数据写入文件
-    with open(path,"w+") as fw:
-        if bLine > 1:
-            dJson = listToJson(data)
-            fw.write(dJson)
-        else:
-            dJson = listToJsonEx(data)
-            fw.write(dJson)
-                
 if __name__ == '__main__':
     # walkFile(rootPath+"assets/resources/langzh/")
 
-    # open_prefab('./tool_package/createAccount.prefab')
+    open_prefab('./tool_package/createAccount.prefab', "", "", "", "","")
     # # src_dir = r'D:\FishingGameClient\build\jsb-default\res\raw-assets'
     # nw_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
     # print(nw_path)

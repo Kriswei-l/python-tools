@@ -1,27 +1,29 @@
 '''
 Date: 2021-04-15 14:32:56
-LastEditTime: 2021-04-15 18:05:57
+LastEditTime: 2021-04-16 17:39:11
 FilePath: /python-tools/tool_package/tiLang/TrieTree.py
 Description: 树
 '''
 
+import sys
+sys.path.append('/Users/mac/Project/python-tools/utils')
+from Stack import Stack
+from Queue import Queue
 class TreeNode:
+    """x-数据值，t-类型：0-顶点，1-cc.Node, 2-cc.componente,3-cc.PrefabInfo"""
+
     def __init__(self, x, t):
-        """x-数据值，t-类型：0-顶点，1-cc.Node, 2-cc."""
         self.data = x
         self.t = t
-        self.chld = []
-
-from utils.Stack import Stack
-from utils.Queue import Queue
+        self.child = []
 
 class TrieTree:
-    def __init__(self, d, t):
+    def __init__(self):
         # self.root = {}
         self.root = None
 
     def add(self, p, c):
-        p.child = c
+        p.child.append(c)
 
         # for _item in item:
         #     node = current_node.get(_item)
@@ -29,6 +31,19 @@ class TrieTree:
         #         new_node = {}
         #     else:
         #         current_node = node
+    
+    def prologue(self, a_tree):
+        """前序打印"""
+        temp = list()
+        def recurse(node):
+            if node != None:
+                temp.append(node.data)
+                if len(node.child) > 0:
+                    for i in range(0,len(node.child)):
+                        recurse(node.child[i])
+        recurse(a_tree)
+        return temp
+
 
     def PreOrder(self,a_tree,a_visit):
         #search the tree in pre-order
