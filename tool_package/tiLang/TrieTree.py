@@ -1,6 +1,6 @@
 '''
 Date: 2021-04-15 14:32:56
-LastEditTime: 2021-04-16 17:39:11
+LastEditTime: 2021-04-19 11:06:30
 FilePath: /python-tools/tool_package/tiLang/TrieTree.py
 Description: 树
 '''
@@ -38,7 +38,7 @@ class TrieTree:
         def recurse(node):
             if node != None:
                 temp.append(node.data)
-                if len(node.child) > 0:
+                if node.child and len(node.child) > 0:
                     for i in range(0,len(node.child)):
                         recurse(node.child[i])
         recurse(a_tree)

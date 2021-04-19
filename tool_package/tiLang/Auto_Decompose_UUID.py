@@ -143,36 +143,6 @@ def find_child_type(data, dsite, reuuid, langPath, fileType, typeName, path):
         # print(data[dChild_d['__id__']])
         find_child_type(data, data[dChild_d['__id__']], reuuid, langPath, fileType, typeName, path)
 
-
-
-
-# 查找所有的prefab并替换
-def find_prefab(reuuid, fileType, typeName):
-    language = ''
-    pathPrefab = ''
-    pathtexture = ''
-    scene = ''
-    with open('./tool_package/tiLang/langConf.txt', 'rb') as infile:
-        while True:
-            content = infile.readline()
-            if not content:
-                break
-            contentStr=str(content,encoding='utf-8').replace('\n', '')
-            # print(contentStr)
-            alist = contentStr.split('=')
-            if alist[0] == 'language':
-                language = alist[1].strip()
-            elif alist[0] == 'pathPrefab':
-                pathPrefab = alist[1].strip()
-            elif alist[0] == 'pathtexture':
-                pathtexture = alist[1].strip()
-            elif alist[0] == 'scene':
-                scene = alist[1].strip()
-    
-    # 查找单独的一个prefab
-    # open_prefab("./tool_package/Login.fire", reuuid, language, fileType, typeName)
-    # return
-
 def find_child_PrefabInfo(trie, p, data, dPref):
     """查找prefabinfo"""
     if data is None:
@@ -211,10 +181,17 @@ def find_child_componente(trie, p, data, dcomp):
     for j in range(0, len(dcomp)):
         dIndex = dcomp[j]['__id__']
         dChild_d = data[dIndex]
+        if dChild_d['__type__'] == 'cc.ToggleGroup':
+            pass
+            break
         c = TreeNode(dChild_d, 2)
         trie.add(p, c)
         if dChild_d.get('clickEvents'):
             find_child_clickEvents(trie, c, data, dChild_d['clickEvents'])
+        if dChild_d.get('toggleGroup') and dChild_d['_N$isChecked']:
+            find_child_clickEvents(trie, c, data, [dChild_d['toggleGroup']])
+        if dChild_d.get('checkEvents'):
+            find_child_clickEvents(trie, c, data, dChild_d['checkEvents'])
  
 # 查找节点
 def find_child_node(trie, p, data, dsite):
@@ -326,11 +303,69 @@ def walkFile(file):
             path=os.path.join(root, f)
             find_file_type(path, root, f, '.png', '0ffbcbl89xEj5yYYH4SQgf+')
             # find_file_type(path, f, '.fnt')
+# 查找所有的prefab并替换
+def find_prefab(reuuid, fileType, typeName):
+    language = ''
+    pathPrefab = ''
+    pathtexture = ''
+    scene = ''
+    with open('./tool_package/tiLang/langConf.txt', 'rb') as infile:
+        while True:
+            content = infile.readline()
+            if not content:
+                break
+            contentStr=str(content,encoding='utf-8').replace('\n', '')
+            # print(contentStr)
+            alist = contentStr.split('=')
+            if alist[0] == 'language':
+                language = alist[1].strip()
+            elif alist[0] == 'pathPrefab':
+                pathPrefab = alist[1].strip()
+            elif alist[0] == 'pathtexture':
+                pathtexture = alist[1].strip()
+            elif alist[0] == 'scene':
+                scene = alist[1].strip()
+    
+    # 查找单独的一个prefab
+    # open_prefab_find("./tool_package/Login.fire", reuuid, language, fileType, typeName)
+    # return
+    # 
+    for root, dirs, files in os.walk(pathPrefab):
+        # root 表示当前正在访问的文件夹路径
+        # dirs 表示该文件夹下的子目录名list
+        # files 表示该文件夹下的文件list
+        
+        # 遍历文件
+        for f in files:
+            path=os.path.join(root, f)
+            if path.find('.prefab') != -1 and path.find('.meta') == -1:
+                open_prefab(path, "", reuuid, language, fileType, typeName)
+    for root, dirs, files in os.walk(pathtexture):
+        # root 表示当前正在访问的文件夹路径
+        # dirs 表示该文件夹下的子目录名list
+        # files 表示该文件夹下的文件list
+        
+        # 遍历文件
+        for f in files:
+            path=os.path.join(root, f)
+            if path.find('.prefab') != -1 and path.find('.meta') == -1:
+                open_prefab(path, "", reuuid, language, fileType, typeName)
+    # 查找场景
+    for root, dirs, files in os.walk(scene):
+        # root 表示当前正在访问的文件夹路径
+        # dirs 表示该文件夹下的子目录名list
+        # files 表示该文件夹下的文件list
+        
+        # 遍历文件
+        for f in files:
+            path=os.path.join(root, f)
+            if path.find('.fire') != -1 and path.find('.meta') == -1:
+                open_prefab(path, "", reuuid, language, fileType, typeName)
 
 if __name__ == '__main__':
     # walkFile(rootPath+"assets/resources/langzh/")
 
-    open_prefab('./tool_package/createAccount.prefab', "", "", "", "","")
+    # open_prefab('./tool_package/tiLang/FishListLayer.prefab', "", "", "", "","")
     # # src_dir = r'D:\FishingGameClient\build\jsb-default\res\raw-assets'
     # nw_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
     # print(nw_path)
@@ -341,26 +376,26 @@ if __name__ == '__main__':
     # 项目地址
     prog_path = ""
     # 需要替换文件的配置
-    # fileNameList = './tool_package/tiLang/i18nlist.txt';
-    # objNameList = []
-    # for i in open(fileNameList, 'r'):
-    #     objNameList.append(i.replace('\n', ''))
+    fileNameList = './tool_package/tiLang/i18nlist.txt';
+    objNameList = []
+    for i in open(fileNameList, 'r'):
+        objNameList.append(i.replace('\n', ''))
 
-    # # 循环查找
-    # for i in objNameList:
-    #     iList = i.split(':')
-    #     if len(iList) < 3:
-    #         break
-    #     typeName = iList[0]
-    #     objName = r"".join(iList[1])
-    #     if os.path.isdir(objName):
-    #         # walkFile(objName)
-    #         ''
-    #     elif os.path.isfile(objName):
-    #         uuid = start_find_uuid(objName, i)
-    #         reuuid = compressUuid(uuid)
-    #         print(reuuid)
-    #         if iList[1]:
-    #             fileType = iList[2].split('-')
-    #         find_prefab(reuuid, fileType, typeName)
+    # 循环查找
+    for i in objNameList:
+        iList = i.split(':')
+        if len(iList) < 3:
+            break
+        typeName = iList[0]
+        objName = r"".join(iList[1])
+        if os.path.isdir(objName):
+            # walkFile(objName)
+            ''
+        elif os.path.isfile(objName):
+            uuid = start_find_uuid(objName, i)
+            reuuid = compressUuid(uuid)
+            print(reuuid)
+            if iList[1]:
+                fileType = iList[2].split('-')
+            find_prefab(reuuid, fileType, typeName)
 
