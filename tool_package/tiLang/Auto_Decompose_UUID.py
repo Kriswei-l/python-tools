@@ -182,8 +182,7 @@ def find_child_componente(trie, p, data, dcomp):
         dIndex = dcomp[j]['__id__']
         dChild_d = data[dIndex]
         if dChild_d['__type__'] == 'cc.ToggleGroup':
-            pass
-            break
+            continue
         c = TreeNode(dChild_d, 2)
         trie.add(p, c)
         if dChild_d.get('clickEvents'):
@@ -192,7 +191,14 @@ def find_child_componente(trie, p, data, dcomp):
             find_child_clickEvents(trie, c, data, [dChild_d['toggleGroup']])
         if dChild_d.get('checkEvents'):
             find_child_clickEvents(trie, c, data, dChild_d['checkEvents'])
- 
+        if dChild_d.get('textChanged'):
+            find_child_clickEvents(trie, c, data, dChild_d['textChanged'])
+        if dChild_d['__type__'] == 'cc.PageView' and dChild_d.get('pageEvents'):
+            find_child_clickEvents(trie, c, data, dChild_d['pageEvents'])
+        if dChild_d['__type__'] == 'cc.EditBox' and dChild_d.get('editingDidBegan'):
+            find_child_clickEvents(trie, c, data, dChild_d['editingDidBegan']) 
+
+
 # 查找节点
 def find_child_node(trie, p, data, dsite):
     if data is None:
@@ -365,7 +371,7 @@ def find_prefab(reuuid, fileType, typeName):
 if __name__ == '__main__':
     # walkFile(rootPath+"assets/resources/langzh/")
 
-    # open_prefab('./tool_package/tiLang/FishListLayer.prefab', "", "", "", "","")
+    open_prefab('./tool_package/GiftShopRecordLayer.prefab', "", "", "", "","")
     # # src_dir = r'D:\FishingGameClient\build\jsb-default\res\raw-assets'
     # nw_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
     # print(nw_path)
@@ -374,28 +380,27 @@ if __name__ == '__main__':
     # # print(uuid)
 
     # 项目地址
-    prog_path = ""
+    # prog_path = ""
     # 需要替换文件的配置
-    fileNameList = './tool_package/tiLang/i18nlist.txt';
-    objNameList = []
-    for i in open(fileNameList, 'r'):
-        objNameList.append(i.replace('\n', ''))
+    # fileNameList = './tool_package/tiLang/i18nlist.txt';
+    # objNameList = []
+    # for i in open(fileNameList, 'r'):
+    #     objNameList.append(i.replace('\n', ''))
 
-    # 循环查找
-    for i in objNameList:
-        iList = i.split(':')
-        if len(iList) < 3:
-            break
-        typeName = iList[0]
-        objName = r"".join(iList[1])
-        if os.path.isdir(objName):
-            # walkFile(objName)
-            ''
-        elif os.path.isfile(objName):
-            uuid = start_find_uuid(objName, i)
-            reuuid = compressUuid(uuid)
-            print(reuuid)
-            if iList[1]:
-                fileType = iList[2].split('-')
-            find_prefab(reuuid, fileType, typeName)
-
+    # # 循环查找
+    # for i in objNameList:
+    #     iList = i.split(':')
+    #     if len(iList) < 3:
+    #         break
+    #     typeName = iList[0]
+    #     objName = r"".join(iList[1])
+    #     if os.path.isdir(objName):
+    #         # walkFile(objName)
+    #         ''
+    #     elif os.path.isfile(objName):
+    #         uuid = start_find_uuid(objName, i)
+    #         reuuid = compressUuid(uuid)
+    #         print(reuuid)
+    #         if iList[1]:
+    #             fileType = iList[2].split('-')
+    #         find_prefab(reuuid, fileType, typeName)
