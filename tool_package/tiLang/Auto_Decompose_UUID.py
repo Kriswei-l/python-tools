@@ -244,11 +244,16 @@ def open_prefab(path, i18nStr, reuuid, langPath, fileType, typeName):
     # print(type(data))
     # print(isinstance(data, lsit))
     # print(data)
-    
+
+    # 设置新的列表存放
+    newData = []
+
     tree = None
     trie = TrieTree()
     for i in range(0,len(data)):
         d = data[i]
+        if d['__type__'] != 'cc.Node':
+            newData.append(d)
         # print(d)
         if d['__type__'] == 'cc.Node':
             # print(d['_children'])
@@ -266,8 +271,7 @@ def open_prefab(path, i18nStr, reuuid, langPath, fileType, typeName):
             find_child_PrefabInfo(trie, tree, data, d['_prefab'])
             break
     
-    newData = []
-    newData.append(data[0])
+    
     newData.extend(trie.prologue(tree))
 
     # 数据写入文件
