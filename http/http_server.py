@@ -1,14 +1,14 @@
 
-#--coding:utf-8--
- 
+# --coding:utf-8--
+
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from os import path
 from urllib.parse import urlparse
 import json
- 
+
 curdir = path.dirname(path.realpath(__file__))
 sep = '/'
- 
+
 # MIME-TYPE
 mimedic = [
     ('.html', 'text/html'),
@@ -22,14 +22,15 @@ mimedic = [
     ('.txt', 'text/plain'),
     ('.avi', 'video/x-msvideo'),
 ]
- 
+
+
 class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
     # GET
     def do_GET(self):
         sendReply = False
         querypath = urlparse(self.path)
         filepath, query = querypath.path, querypath.query
-        
+
         if filepath.endswith('/'):
             filepath += 'index.html'
         filename, fileext = path.splitext(filepath)
@@ -37,27 +38,30 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
             if e[0] == fileext:
                 mimetype = e[1]
                 sendReply = True
- 
+
         if sendReply == True:
             try:
-                with open(path.realpath(curdir + sep + filepath),'rb') as f:
+                with open(path.realpath(curdir + sep + filepath), 'rb') as f:
                     content = f.read()
                     self.send_response(200)
-                    self.send_header('Content-type',mimetype)
+                    self.send_header('Content-type', mimetype)
                     self.end_headers()
                     self.wfile.write(content)
             except IOError:
-                self.send_error(404,'File Not Found: %s' % self.path)
- 
+                self.send_error(404, 'File Not Found: %s' % self.path)
+
+
 def run():
     port = 8000
     print('starting server, port', port)
- 
+
     # Server settings
+    # 访问地址： http://127.0.0.1:8000/
     server_address = ('127.0.0.1', port)
     httpd = HTTPServer(server_address, testHTTPServer_RequestHandler)
     print('running server...')
     httpd.serve_forever()
- 
+
+
 if __name__ == '__main__':
     run()
