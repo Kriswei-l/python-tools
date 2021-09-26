@@ -21,5 +21,23 @@ def respost():
     print(res)
 
 
+def reqHttpApi():
+    URL = 'http://172.16.16.153:8088/payOk'
+    res = requests.get(URL, params={"userId": "60261035", "JF": "DQ_01"})
+    print(res)
+
+
+def reqAddItemApi():
+    URL = 'http://172.16.16.153:19999/addItems/60261035'
+    res = requests.get(URL, params={"items": "100004,20000"})
+    print(res)
+
+
+def reqRedApi():
+    URL = "http://172.16.16.153:19999/addItems/60261035?items=100004,-1000"
+    res = requests.get(URL)
+    print(res)
+
+
 if __name__ == '__main__':
-    respost()
+    reqRedApi()
