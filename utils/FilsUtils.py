@@ -1,6 +1,6 @@
 '''
 Date: 2021-09-26 18:20:49
-LastEditTime: 2021-09-27 10:45:40
+LastEditTime: 2021-09-27 11:49:29
 FilePath: /python-tools/utils/FilsUtils.py
 Description: 文件读取类
 '''
@@ -34,4 +34,6 @@ class FilsUtils():
                 if not content:
                     break
                 contentStr = str(content, encoding='utf-8').replace('\n', '')
-                print(contentStr)
+                confArr.append(contentStr)
+                # print(contentStr)
+        return confArr
