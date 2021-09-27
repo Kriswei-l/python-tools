@@ -6,7 +6,7 @@ def resget():
     res = requests.get(URL, params={"version": "1.7.0.0", "channel": "10020491",
                                     "resversion": "1.7.0.0", "jsversion": "1.7.0.0", "httpType": "http"})
     # res.encoding = 'utf-8'
-    if(res.status_code == 200):
+    if res.status_code == 200:
         d = res.json()
         print(d)
         file = open('http.txt', 'a+')
@@ -29,7 +29,8 @@ def reqHttpApi():
 
 def reqAddItemApi():
     URL = 'http://172.16.16.153:19999/addItems/60261035'
-    res = requests.get(URL, params={"items": "100004,20000"})
+    res = requests.get(URL, params={"items": "100004,-1000"})
+    res.encoding = 'utf-8'
     print(res)
 
 
