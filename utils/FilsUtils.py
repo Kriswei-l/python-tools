@@ -1,6 +1,6 @@
 '''
 Date: 2021-09-26 18:20:49
-LastEditTime: 2021-09-27 11:49:29
+LastEditTime: 2021-09-27 16:00:55
 FilePath: /python-tools/utils/FilsUtils.py
 Description: 文件读取类
 '''
@@ -22,8 +22,8 @@ class FilsUtils():
             return path
         elif os.path.isfile(path):
             return os.path.dirname(path)
-    # 读取txt内容
     def readTxt(self, path):
+        # 读取txt内容
         # os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
         # nw_path = self.fileDir(None)
         # print(nw_path)
@@ -37,3 +37,15 @@ class FilsUtils():
                 confArr.append(contentStr)
                 # print(contentStr)
         return confArr
+    
+    def readTxtEx(self, path, strSpl='|'):
+        # 读取txt内容，带分割字符串返回二维数组
+        # os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+        # nw_path = self.fileDir(None)
+        # print(nw_path)
+        confArr = self.readTxt(path)
+        confArrEx = []
+        for index,x in enumerate(confArr):
+            lineArr = x.split(strSpl)
+            confArrEx.append(lineArr)
+        return confArrEx
