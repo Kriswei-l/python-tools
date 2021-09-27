@@ -1,8 +1,8 @@
 '''
 Date: 2021-09-26 16:36:35
-LastEditTime: 2021-09-27 17:33:08
+LastEditTime: 2021-09-27 17:41:09
 FilePath: /python-tools/learn_py/GUIpy.py
-Description: 图形界面
+Description: 图形界面学习
 '''
 import os
 import os.path
