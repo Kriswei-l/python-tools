@@ -1,6 +1,6 @@
 '''
 Date: 2021-09-28 16:50:52
-LastEditTime: 2021-09-28 19:41:10
+LastEditTime: 2021-09-28 22:45:40
 FilePath: /python-tools/learn_py/GUIApi.py
 Description: 学习写一个通用发送API的界面
 '''
@@ -21,6 +21,7 @@ def img_open(shape, path):
     return img 
 # 找到打包后的资源路径
 def get_resource_path(relative_path):
+    isMac = True if os.name=="posix" else False
     if hasattr(sys, 'frozen'):
         # Handles PyInstaller
         return os.path.join(os.path.dirname(sys.executable), relative_path)  #使用pyinstaller打包后的exe目录
@@ -33,7 +34,7 @@ class GridFrame(object):
     def __init__(self, window, shape, locate, name, ev_queue, conf):
         frame = Frame(window, width=shape[0], height=shape[1])
         frame.place(x=locate[0], y=locate[1])
-        self.shape = (int(shape[0]/5), shape[1])
+        self.shape = (int(shape[0]), shape[1])
         self.button_shape = (80, 20)
         self.img_send = img_open(self.button_shape, get_resource_path('conf/send.png'))
         self.creatBtn(frame, conf[0], conf[1])
@@ -45,7 +46,7 @@ class GridFrame(object):
         self.nameInput.place(x=80,y=0)
         self.nameInput.insert(0,path)
         self.alertButton = Button(wm, image=self.img_send,width=self.button_shape[0], height=self.button_shape[1], command=self.hello)
-        self.alertButton.place(x=650,y=0)
+        self.alertButton.place(x=self.shape[0]-self.button_shape[0]-5,y=0)
         # self.alertButton.config(image=self.img_send)
         # self.alertButton.image = self.img_send
 
