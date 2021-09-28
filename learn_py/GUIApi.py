@@ -1,11 +1,12 @@
 '''
 Date: 2021-09-28 16:50:52
-LastEditTime: 2021-09-28 18:21:51
+LastEditTime: 2021-09-28 19:41:10
 FilePath: /python-tools/learn_py/GUIApi.py
 Description: 学习写一个通用发送API的界面
 '''
 import os
 import os.path
+import sys
 from tkinter import *
 import tkinter.messagebox as messagebox
 import requests
@@ -17,7 +18,16 @@ def img_open(shape, path):
     img = Image.open(path)
     img = img.resize((shape[0] - 5, shape[1]), Image.ANTIALIAS)
     img = ImageTk.PhotoImage(img)
-    return img
+    return img 
+# 找到打包后的资源路径
+def get_resource_path(relative_path):
+    if hasattr(sys, 'frozen'):
+        # Handles PyInstaller
+        return os.path.join(os.path.dirname(sys.executable), relative_path)  #使用pyinstaller打包后的exe目录
+    return os.path.join(os.path.dirname(__file__), relative_path)                 #没打包前的py目录
+    # if hasattr(sys, '_MEIPASS'):
+    #     return os.path.join(sys._MEIPASS, relative_path)
+    # return os.path.join(os.path.abspath("."), relative_path)
 
 class GridFrame(object):
     def __init__(self, window, shape, locate, name, ev_queue, conf):
@@ -25,7 +35,7 @@ class GridFrame(object):
         frame.place(x=locate[0], y=locate[1])
         self.shape = (int(shape[0]/5), shape[1])
         self.button_shape = (80, 20)
-        self.img_send = img_open(self.button_shape, './send.png')
+        self.img_send = img_open(self.button_shape, get_resource_path('conf/send.png'))
         self.creatBtn(frame, conf[0], conf[1])
     
     def creatBtn(self, wm, labStr, path):
@@ -96,7 +106,7 @@ class PoseFreame(object):
         self.frame_create()
     
     def frame_create(self):
-        pathArr = self.readTxtEx(r'./conf.txt')
+        pathArr = self.readTxtEx(get_resource_path('conf/conf.txt'))
         pose_num = len(pathArr)
         self.vbar_width = 10
         self.pose_grid_frame_shape = (self.shape[0]-self.vbar_width, 30) 
@@ -145,6 +155,7 @@ class PoseFreame(object):
         # os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
         # nw_path = self.fileDir(None)
         # print(nw_path)
+        print(path)
         confArr = self.readTxt(path)
         confArrEx = []
         for index,x in enumerate(confArr):
