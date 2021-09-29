@@ -1,6 +1,6 @@
 '''
 Date: 2021-09-28 16:50:52
-LastEditTime: 2021-09-28 22:45:40
+LastEditTime: 2021-09-29 09:55:01
 FilePath: /python-tools/learn_py/GUIApi.py
 Description: 学习写一个通用发送API的界面
 '''
@@ -72,25 +72,29 @@ class VbarFrame(object):
         vbar = Scrollbar(window, bd=1, orient=VERTICAL, width=vbar_width)
         vbar.set(0.5, 1)
         vbar.pack(fill=Y, side=RIGHT, expand=FALSE)
-        canvas = Canvas(window, highlightthickness=0, 
+        self.canvas = Canvas(window, highlightthickness=0, 
                                     width=canvas_shape[0], 
                                     height=canvas_shape[1], 
                                     yscrollcommand=vbar.set,
                                     scrollregion=(0,0,0,frame_shape[1]))
-        canvas.pack(side=LEFT, expand=True)
-        vbar.config(command=canvas.yview)
+        self.canvas.pack(side=LEFT, expand=True)
+        vbar.config(command=self.canvas.yview)
         
-        canvas.xview_moveto(0)
-        canvas.yview_moveto(0)
+        self.canvas.xview_moveto(0)
+        self.canvas.yview_moveto(0)
+        # 添加鼠标滚轮绑定
+        self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
 
-        self.frame = Frame(canvas, 
+        self.frame = Frame(self.canvas, 
                                     width=frame_shape[0]*2,
                                     height=frame_shape[1]*2)
         self.frame.pack(expand=False, side=LEFT)  
         self.frame.propagate(0)
-        canvas.create_window(frame_shape[0],
+        self.canvas.create_window(frame_shape[0],
                                     frame_shape[1],
                                     window=self.frame)
+    def _on_mousewheel(self, event):
+        self.canvas.yview_scroll(-1*(event.delta), "units")
 
 class PoseFreame(object):
     def __init__(self, window, shape, locate, name, color, ev_queue):
