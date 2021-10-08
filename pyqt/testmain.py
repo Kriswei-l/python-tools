@@ -1,13 +1,13 @@
 '''
 Date: 2021-10-08 17:32:49
-LastEditTime: 2021-10-08 18:06:34
-FilePath: /python-tools/pyqt/test.py
+LastEditTime: 2021-10-08 22:13:40
+FilePath: /python-tools/pyqt/testmain.py
 Description: 
 '''
 # 生成ui对应的py文件
 # pyuic6 -x test.ui -o runtest.py
 
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtWidgets
 from zruntest import zruntest
 
 if __name__ == "__main__":
@@ -16,6 +16,6 @@ if __name__ == "__main__":
     Dialog = QtWidgets.QDialog()
     ui = zruntest()
     ui.setupUi(Dialog)
-    ui.initBtn()
+    # ui.initBtn()
     Dialog.show()
     sys.exit(app.exec())
